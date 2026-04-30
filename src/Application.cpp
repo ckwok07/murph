@@ -1,6 +1,6 @@
 #define GLFW_INCLUDE_NONE
 #include "Application.h"
-#include <GLFW/glfw3.h>
+struct GLFWwindow;
 #include <iostream>
 #include <glad/glad.h>
 
@@ -36,6 +36,11 @@ bool Application::init() {
     // std::cout << "GPU renderer: " << glGetString(GL_RENDERER) << "\n";
     // std::cout << "OpenGL version: " << glGetString(GL_VERSION) << "\n";
 
+    if (!renderer.init()) {
+        std::cerr << "failed renderer init\n";
+        return false;
+    }
+
     return true;
 }
 
@@ -51,14 +56,14 @@ int Application::run() {
 void Application::loop() {
     while (!glfwWindowShouldClose(window)) {
         glfwPollEvents();
-        glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        renderer.clear();
         glfwSwapBuffers(window);
     }
 }
 
 void Application::shutdown() {
     if (window) {
+        renderer.shutdown();
         glfwDestroyWindow(window);
         window = nullptr;
     }

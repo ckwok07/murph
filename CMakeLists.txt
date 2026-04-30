@@ -12,6 +12,7 @@ find_package(OpenGL REQUIRED)
 add_executable(murph
     src/main.cpp
     src/Application.cpp
+    src/Renderer.cpp
 )
 
 target_link_libraries(murph PRIVATE glfw glad::glad OpenGL::GL)
