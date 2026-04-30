@@ -17,7 +17,7 @@ bool Application::init() {
         std::cerr << "failed init\n";
         return false;
     }
-    window = glfwCreateWindow(800, 600, "murph", nullptr, nullptr);
+    window = glfwCreateWindow(800, 800, "murph", nullptr, nullptr);
 
     if (!window) {
         std::cerr << "failed window\n";

@@ -2,6 +2,7 @@
 #include "Renderer.h"
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include <vector>
 
 Renderer::Renderer()
     : r(0.2f),
@@ -9,7 +10,8 @@ Renderer::Renderer()
     b(0.2f),
     a(1.0f),
     vao(0),
-    vbo(0) {
+    vbo(0),
+    vertexCount(0) {
 }
 
 Renderer::~Renderer() {
@@ -40,15 +42,46 @@ bool Renderer::init() {
         return false;
     }
 
-    float axisVertices[] = { -0.8f,  0.0f, 0.0f, 
-                            0.8f,  0.0f, 0.0f, 
-                            0.0f, -0.8f, 0.0f,
-                            0.0f,  0.8f, 0.0f};
+    std::vector<float> gridVertices;
+
+    const int lineCount = 20;
+    const float spacing = 2.0f / lineCount;
+
+    for (int i = 0; i <= lineCount; i++) {
+        float value = -1.0f + i * spacing;
+
+        // vertical line
+        gridVertices.push_back(value);
+        gridVertices.push_back(-1.0f);
+        gridVertices.push_back(0.0f);
+
+        gridVertices.push_back(value);
+        gridVertices.push_back(1.0f);
+        gridVertices.push_back(0.0f);
+
+        // horizontal line
+        gridVertices.push_back(-1.0f);
+        gridVertices.push_back(value);
+        gridVertices.push_back(0.0f);
+
+        gridVertices.push_back(1.0f);
+        gridVertices.push_back(value);
+        gridVertices.push_back(0.0f);
+    }
+
+    vertexCount = static_cast<int>(gridVertices.size() / 3);
+
     glGenVertexArrays(1, &vao);
     glGenBuffers(1, &vbo);
+
     glBindVertexArray(vao);
+
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(axisVertices), axisVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, 
+                gridVertices.size() * sizeof(float), 
+                gridVertices.data(), 
+                GL_STATIC_DRAW);
+
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 
@@ -63,7 +96,7 @@ void Renderer::clear() {
 
     shader.use();
     glBindVertexArray(vao);
-    glDrawArrays(GL_LINES, 0, 4);
+    glDrawArrays(GL_LINES, 0, vertexCount);
     glBindVertexArray(0);
 }
 

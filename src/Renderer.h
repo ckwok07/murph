@@ -18,4 +18,5 @@ private:
     Shader shader;
     unsigned int vbo; // vertex buffer object
     unsigned int vao; // vertex array object
+    int vertexCount;
 };
