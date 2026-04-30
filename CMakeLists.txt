@@ -13,6 +13,7 @@ add_executable(murph
     src/main.cpp
     src/Application.cpp
     src/Renderer.cpp
+    src/Shader.cpp
 )
 
 target_link_libraries(murph PRIVATE glfw glad::glad OpenGL::GL)

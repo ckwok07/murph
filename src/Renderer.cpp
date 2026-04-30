@@ -16,7 +16,25 @@ Renderer::~Renderer() {
 }
 
 bool Renderer::init() {
-    return true;
+    const char* vertexSource = R"(
+    #version 330 core
+
+    layout (location = 0) in vec3 aPosition;
+
+    void main() {
+        gl_Position = vec4(aPosition, 1.0);
+    }
+    )";
+    const char* fragmentSource = R"(
+    #version 330 core
+
+    out vec4 FragColor;
+
+    void main() {
+        FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    }
+    )";
+    return shader.create(vertexSource, fragmentSource);
 }
 
 void Renderer::clear() {
@@ -25,5 +43,5 @@ void Renderer::clear() {
 }
 
 void Renderer::shutdown() {
-
+    shader.destroy();
 }

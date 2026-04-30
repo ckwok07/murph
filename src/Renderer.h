@@ -1,4 +1,5 @@
 #pragma once
+#include "Shader.h"
 
 class Renderer {
 public:
@@ -14,4 +15,5 @@ private:
     float g = 1.0f;
     float b = 1.0f;
     float a = 1.0f;
+    Shader shader;
 };
