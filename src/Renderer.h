@@ -16,4 +16,6 @@ private:
     float b = 1.0f;
     float a = 1.0f;
     Shader shader;
+    unsigned int vbo; // vertex buffer object
+    unsigned int vao; // vertex array object
 };
