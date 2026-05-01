@@ -16,6 +16,7 @@ add_executable(murph
     src/Renderer.cpp
     src/Shader.cpp
     src/Camera.cpp
+    src/Physics.cpp
 )
 
 target_link_libraries(murph PRIVATE glfw glad::glad OpenGL::GL glm::glm)

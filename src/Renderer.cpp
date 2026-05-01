@@ -11,7 +11,9 @@ Renderer::Renderer()
     a(1.0f),
     vao(0),
     vbo(0),
-    vertexCount(0) {
+    vertexCount(0),
+    pvao(0),
+    pvbo(0) {
 }
 
 Renderer::~Renderer() {
@@ -77,8 +79,8 @@ bool Renderer::init() {
     glGenBuffers(1, &vbo);
 
     glBindVertexArray(vao);
-
     glBindBuffer(GL_ARRAY_BUFFER, vbo);
+
     glBufferData(GL_ARRAY_BUFFER, 
                 gridVertices.size() * sizeof(float), 
                 gridVertices.data(), 
@@ -89,6 +91,47 @@ bool Renderer::init() {
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
+
+    const char* pvertexSource = R"(
+    #version 330 core
+
+    layout (location = 0) in vec3 aPosition;
+    uniform mat4 uView;
+    uniform mat4 uProjection;
+
+    void main() {
+        gl_Position = uProjection * uView * vec4(aPosition, 1.0);
+        gl_PointSize = 100.0 / gl_Position.w;
+    }
+    )";
+    const char* pfragmentSource = R"(
+    #version 330 core
+
+    out vec4 FragColor;
+
+    void main() {
+        FragColor = vec4(1.0, 1.0, 1.0, 1.0);
+    }
+    )";
+
+    if (!particleShader.create(pvertexSource, pfragmentSource)) {
+        return false;
+    }
+
+    glGenVertexArrays(1, &pvao);
+    glGenBuffers(1, &pvbo);
+
+    glBindVertexArray(pvao);
+    glBindBuffer(GL_ARRAY_BUFFER, pvbo);
+
+    glBufferData(GL_ARRAY_BUFFER, 1000 * 3 * sizeof(float), nullptr, GL_DYNAMIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     return true;
 }
 
@@ -115,4 +158,27 @@ void Renderer::shutdown() {
         vao = 0;
     }
     shader.destroy();
+}
+
+void Renderer::draw(const std::vector<Particle>& particles) {
+
+    std::vector<float> particleVertices;
+
+    for (const auto& p : particles) {
+        particleVertices.push_back(p.position.x);
+        particleVertices.push_back(p.position.y);
+        particleVertices.push_back(p.position.z);
+    }
+
+    glBindVertexArray(pvao);
+    glBindBuffer(GL_ARRAY_BUFFER, pvbo);
+
+    glBufferSubData(GL_ARRAY_BUFFER, 0,
+                particleVertices.size() * sizeof(float), 
+                particleVertices.data());
+    particleShader.use();
+    particleShader.setMat4("uView", camera.getViewMatrix());
+    particleShader.setMat4("uProjection", camera.getProjectionMatrix());
+    glDrawArrays(GL_POINTS, 0, particles.size());
+    glBindVertexArray(0);
 }

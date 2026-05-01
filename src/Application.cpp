@@ -53,6 +53,16 @@ bool Application::init() {
         return false;
     }
 
+    glEnable(GL_PROGRAM_POINT_SIZE);
+
+    Particle p;
+    p.position = glm::vec3(1.0f, 0.0f, 0.0f);
+    p.velocity = glm::vec3(0.0f);
+    p.acceleration = glm::vec3(0.0f);
+    p.mass = 1.0f;
+    p.size = 1.0f;
+    physics.addParticle(p);
+
     return true;
 }
 
@@ -81,8 +91,10 @@ void Application::loop() {
             glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS,
             glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS,
             dt);
-
+        
+        physics.update(dt);
         renderer.clear();
+        renderer.draw(physics.particles);
         glfwSwapBuffers(window);
     }
 }

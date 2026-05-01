@@ -2,6 +2,7 @@
 
 #include <GLFW/glfw3.h>
 #include "Renderer.h"
+#include "Physics.h"
 
 class Application {
 public:
@@ -20,4 +21,5 @@ private:
 private:
     GLFWwindow* window;
     Renderer renderer;
+    Physics physics;
 };
