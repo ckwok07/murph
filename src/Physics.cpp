@@ -14,9 +14,10 @@ void Physics::update(float dt) {
         for (int j = 0; j < particles.size(); j++) {
             if (i == j) continue;
             glm::vec3 direction = particles[j].position - particles[i].position;
-            float distance = glm::length(direction);
+            float distance = glm::length(direction) + 0.1f;
 
-            float g = 6.6743 * pow(10, -11);
+            // float g = 6.6743 * pow(10, -11);
+            float g = 0.01;
             newAcceleration += g * (particles[j].mass / (distance * distance)) * glm::normalize(direction);
         }
 

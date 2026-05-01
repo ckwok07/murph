@@ -63,6 +63,13 @@ bool Application::init() {
     p.size = 1.0f;
     physics.addParticle(p);
 
+    Particle p2;
+    p2.position = glm::vec3(1.5f, 0.0f, 0.0f);
+    p2.velocity = glm::vec3(0.0f);
+    p2.acceleration = glm::vec3(0.0f);
+    p2.mass = 1.0f;
+    p2.size = 1.0f;
+    physics.addParticle(p2);
     return true;
 }
 
