@@ -1,5 +1,6 @@
 #pragma once
 #include "Shader.h"
+#include "Camera.h"
 
 class Renderer {
 public:
@@ -19,4 +20,5 @@ private:
     unsigned int vbo; // vertex buffer object
     unsigned int vao; // vertex array object
     int vertexCount;
+    Camera camera;
 };

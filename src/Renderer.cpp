@@ -23,9 +23,11 @@ bool Renderer::init() {
     #version 330 core
 
     layout (location = 0) in vec3 aPosition;
+    uniform mat4 uView;
+    uniform mat4 uProjection;
 
     void main() {
-        gl_Position = vec4(aPosition, 1.0);
+        gl_Position = uProjection * uView * vec4(aPosition, 1.0);
     }
     )";
     const char* fragmentSource = R"(
@@ -51,22 +53,22 @@ bool Renderer::init() {
         float value = -1.0f + i * spacing;
 
         // vertical line
-        gridVertices.push_back(value);
-        gridVertices.push_back(-1.0f);
-        gridVertices.push_back(0.0f);
+        gridVertices.push_back(value); // x
+        gridVertices.push_back(0.0f); // y
+        gridVertices.push_back(-1.0f); // z
 
         gridVertices.push_back(value);
-        gridVertices.push_back(1.0f);
         gridVertices.push_back(0.0f);
+        gridVertices.push_back(1.0f);
 
         // horizontal line
-        gridVertices.push_back(-1.0f);
-        gridVertices.push_back(value);
-        gridVertices.push_back(0.0f);
+        gridVertices.push_back(-1.0f); // x 
+        gridVertices.push_back(0.0f); // y
+        gridVertices.push_back(value); // z
 
         gridVertices.push_back(1.0f);
-        gridVertices.push_back(value);
         gridVertices.push_back(0.0f);
+        gridVertices.push_back(value);
     }
 
     vertexCount = static_cast<int>(gridVertices.size() / 3);
@@ -95,6 +97,8 @@ void Renderer::clear() {
     glClear(GL_COLOR_BUFFER_BIT);
 
     shader.use();
+    shader.setMat4("uView", camera.getViewMatrix());
+    shader.setMat4("uProjection", camera.getProjectionMatrix());
     glBindVertexArray(vao);
     glDrawArrays(GL_LINES, 0, vertexCount);
     glBindVertexArray(0);
