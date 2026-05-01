@@ -29,13 +29,13 @@ bool Application::init() {
     glfwSetCursorPosCallback(window, [](GLFWwindow* w, double x, double y) {
         auto* app = static_cast<Application*>(glfwGetWindowUserPointer(w));
         static double lastX = x, lastY = y;
-        float dx = float(x - lastX);
-        float dy = float(lastY - y);
+        float dx = 0.5 * float(x - lastX);
+        float dy = 0.5 * float(lastY - y);
         lastX = x;
         lastY = y;
         app->renderer.camera.mouseEvent(dx, dy);
     });
-    
+
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwMakeContextCurrent(window);
 
@@ -66,8 +66,22 @@ int Application::run() {
 }
 
 void Application::loop() {
+    double lastTime = glfwGetTime();
     while (!glfwWindowShouldClose(window)) {
+        double now = glfwGetTime();
+        float dt = float(now - lastTime);
+        lastTime = now;
         glfwPollEvents();
+
+        renderer.camera.keyEvent(
+            glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS,
+            glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS,
+            dt);
+
         renderer.clear();
         glfwSwapBuffers(window);
     }

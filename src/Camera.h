@@ -8,6 +8,7 @@ public:
     glm::mat4 getViewMatrix() const;
     glm::mat4 getProjectionMatrix() const;
     void mouseEvent(float dx, float dy);
+    void keyEvent(bool w, bool a, bool s, bool d, bool shift, bool space, float dt);
 
 private:
     float yaw;
@@ -15,5 +16,6 @@ private:
     float fov;
     float aspect;
     glm::vec3 front;
+    glm::vec3 side;
     void updateVectors();
 };

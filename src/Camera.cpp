@@ -8,7 +8,8 @@ Camera::Camera()
     pitch(0.0f),
     fov(45.0f),
     aspect(1.0f),
-    front(0.0f, 0.0f, -1.0f) {
+    front(0.0f, 0.0f, -1.0f),
+    side(1.0f, 0.0f, 0.0f) {
         updateVectors();
 }
 
@@ -19,6 +20,9 @@ void Camera::updateVectors() {
 
     front = glm::vec3(x,y,z);
     front = glm::normalize(front);
+
+    side = glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f));
+    side = glm::normalize(side);
 }
 
 glm::mat4 Camera::getViewMatrix() const {
@@ -35,3 +39,13 @@ void Camera::mouseEvent(float dx, float dy) {
     pitch = std::clamp(pitch, -89.0f, 89.0f);
     updateVectors();
 }
+
+void Camera::keyEvent(bool w, bool a, bool s, bool d, bool shift, bool space, float dt) {
+    if (w) position += front * 1.0f * dt;
+    if (s) position -= front * 1.0f * dt;
+    if (d) position += side * 1.0f * dt;
+    if (a) position -= side * 1.0f * dt;
+    if (space) position += glm::vec3(0.0f, 1.0f, 0.0f) * 0.1f * dt;
+    if (shift) position -= glm::vec3(0.0f, 1.0f, 0.0f) * 0.1f * dt;
+}
+
