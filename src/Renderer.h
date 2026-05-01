@@ -14,6 +14,8 @@ public:
 
     void draw(const std::vector<Particle>& particles);
 
+    void drawRaymarch();
+
 private:
     float r = 1.0f;
     float g = 1.0f;
@@ -21,10 +23,14 @@ private:
     float a = 1.0f;
     Shader shader;
     Shader particleShader;
+    Shader qShader;
     unsigned int vbo; // vertex buffer object
     unsigned int vao; // vertex array object
     int vertexCount;
 
     unsigned int pvbo;
     unsigned int pvao;
+
+    unsigned int qvao;
+    unsigned int qvbo;
 };

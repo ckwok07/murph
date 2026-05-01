@@ -132,6 +132,62 @@ bool Renderer::init() {
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 
+    const char* qvertexSource = R"(
+    #version 330 core
+    layout (location = 0) in vec2 aPosition;
+
+    out vec2 vUV;
+
+    void main() {
+        vUV = aPosition * 0.5 + 0.5;
+        gl_Position = vec4(aPosition, 0.0, 1.0);
+    }
+    )";
+    const char* qfragmentSource = R"(
+    #version 330 core
+
+    in vec2 vUV;
+    out vec4 FragColor;
+
+    uniform vec3 uCameraPos;
+    uniform vec3 uCameraFront;
+    uniform vec3 uCameraRight;
+    uniform vec3 uCameraUp;
+
+    void main() {
+        vec2 uv = vUV * 2.0 - 1.0;
+
+        FragColor = vec4(abs(uv.x), abs(uv.y), 0.0, 1.0);
+    }
+    )";
+
+    if (!qShader.create(qvertexSource, qfragmentSource)) {
+        return false;
+    }
+
+    float quadVertices[] = {
+        -1.0f, -1.0f,
+        1.0f, -1.0f,
+        1.0f,  1.0f,
+        -1.0f, -1.0f,
+        1.0f,  1.0f,
+        -1.0f,  1.0f
+    };
+
+    glGenVertexArrays(1, &qvao);
+    glGenBuffers(1, &qvbo);
+
+    glBindVertexArray(qvao);
+    glBindBuffer(GL_ARRAY_BUFFER, qvbo);
+
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
+
+    glBindVertexArray(0);
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+
     return true;
 }
 
@@ -180,5 +236,16 @@ void Renderer::draw(const std::vector<Particle>& particles) {
     particleShader.setMat4("uView", camera.getViewMatrix());
     particleShader.setMat4("uProjection", camera.getProjectionMatrix());
     glDrawArrays(GL_POINTS, 0, particles.size());
+    glBindVertexArray(0);
+}
+
+void Renderer::drawRaymarch() {
+    qShader.use();
+    qShader.setVec3("uCameraPos", camera.position);
+    qShader.setVec3("uCameraFront", camera.front);
+    qShader.setVec3("uCameraRight", camera.side);
+    qShader.setVec3("uCameraUp", camera.up);
+    glBindVertexArray(qvao);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 }

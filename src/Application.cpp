@@ -64,12 +64,20 @@ bool Application::init() {
     physics.addParticle(p);
 
     Particle p2;
-    p2.position = glm::vec3(1.5f, 0.0f, 0.0f);
+    p2.position = glm::vec3(0.0f, 0.0f, 1.0f);
     p2.velocity = glm::vec3(0.0f);
     p2.acceleration = glm::vec3(0.0f);
     p2.mass = 1.0f;
     p2.size = 1.0f;
     physics.addParticle(p2);
+
+    Particle p3;
+    p3.position = glm::vec3(0.0f, 1.0f, 0.0f);
+    p3.velocity = glm::vec3(0.0f);
+    p3.acceleration = glm::vec3(0.0f);
+    p3.mass = 1.0f;
+    p3.size = 1.0f;
+    physics.addParticle(p3);
     return true;
 }
 
@@ -100,8 +108,9 @@ void Application::loop() {
             dt);
         
         physics.update(dt);
-        renderer.clear();
-        renderer.draw(physics.particles);
+        // renderer.clear();
+        // renderer.draw(physics.particles);
+        renderer.drawRaymarch();
         glfwSwapBuffers(window);
     }
 }

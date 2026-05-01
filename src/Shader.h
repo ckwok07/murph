@@ -9,7 +9,9 @@ public:
     bool create(const char* vertexSource, const char* fragmentSource);
     void use() const;
     void destroy();
-    void Shader::setMat4(const char* name, const glm::mat4& value) const;
+    void setMat4(const char* name, const glm::mat4& value) const;
+
+    void setVec3(const char* name, const glm::vec3& value) const;
 
 private:
     unsigned int programId;

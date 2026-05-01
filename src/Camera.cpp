@@ -9,7 +9,8 @@ Camera::Camera()
     fov(45.0f),
     aspect(1.0f),
     front(0.0f, 0.0f, -1.0f),
-    side(1.0f, 0.0f, 0.0f) {
+    side(1.0f, 0.0f, 0.0f),
+    up(0.0f, 1.0f, 0.0f) {
         updateVectors();
 }
 
@@ -23,6 +24,7 @@ void Camera::updateVectors() {
 
     side = glm::cross(front, glm::vec3(0.0f, 1.0f, 0.0f));
     side = glm::normalize(side);
+    up = glm::normalize(glm::cross(side, front));
 }
 
 glm::mat4 Camera::getViewMatrix() const {
@@ -45,7 +47,7 @@ void Camera::keyEvent(bool w, bool a, bool s, bool d, bool shift, bool space, fl
     if (s) position -= front * 1.0f * dt;
     if (d) position += side * 1.0f * dt;
     if (a) position -= side * 1.0f * dt;
-    if (space) position += glm::vec3(0.0f, 1.0f, 0.0f) * 0.1f * dt;
-    if (shift) position -= glm::vec3(0.0f, 1.0f, 0.0f) * 0.1f * dt;
+    if (space) position += glm::vec3(0.0f, 1.0f, 0.0f) * 0.5f * dt;
+    if (shift) position -= glm::vec3(0.0f, 1.0f, 0.0f) * 0.5f * dt;
 }
 
