@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <algorithm>
 
 Camera::Camera()
     : position(0.0f, 0.5f, 3.0f),
@@ -26,4 +27,11 @@ glm::mat4 Camera::getViewMatrix() const {
 
 glm::mat4 Camera::getProjectionMatrix() const {
     return glm::perspective(glm::radians(fov), aspect, 0.1f, 100.0f);
+}
+
+void Camera::mouseEvent(float dx, float dy) {
+    yaw += dx;
+    pitch += dy;
+    pitch = std::clamp(pitch, -89.0f, 89.0f);
+    updateVectors();
 }

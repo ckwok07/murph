@@ -24,7 +24,19 @@ bool Application::init() {
         glfwTerminate();
         return false;
     }
+    glfwSetWindowUserPointer(window, this);
 
+    glfwSetCursorPosCallback(window, [](GLFWwindow* w, double x, double y) {
+        auto* app = static_cast<Application*>(glfwGetWindowUserPointer(w));
+        static double lastX = x, lastY = y;
+        float dx = float(x - lastX);
+        float dy = float(lastY - y);
+        lastX = x;
+        lastY = y;
+        app->renderer.camera.mouseEvent(dx, dy);
+    });
+    
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwMakeContextCurrent(window);
 
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
@@ -69,4 +81,8 @@ void Application::shutdown() {
     }
 
     glfwTerminate();
+}
+
+void Application::mouseEvent(float dx, float dy) {
+    renderer.camera.mouseEvent(dx,dy);
 }

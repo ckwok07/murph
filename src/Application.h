@@ -15,6 +15,8 @@ private:
     void loop();
     void shutdown();
 
+    void mouseEvent(float dx, float dy);
+
 private:
     GLFWwindow* window;
     Renderer renderer;

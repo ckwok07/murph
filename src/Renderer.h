@@ -6,7 +6,7 @@ class Renderer {
 public:
     Renderer();
     ~Renderer();
-
+    Camera camera;
     bool init();
     void clear();
     void shutdown();
@@ -20,5 +20,4 @@ private:
     unsigned int vbo; // vertex buffer object
     unsigned int vao; // vertex array object
     int vertexCount;
-    Camera camera;
 };

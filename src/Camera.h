@@ -7,6 +7,7 @@ public:
     glm::vec3 position;
     glm::mat4 getViewMatrix() const;
     glm::mat4 getProjectionMatrix() const;
+    void mouseEvent(float dx, float dy);
 
 private:
     float yaw;

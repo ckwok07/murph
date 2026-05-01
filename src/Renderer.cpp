@@ -47,26 +47,26 @@ bool Renderer::init() {
     std::vector<float> gridVertices;
 
     const int lineCount = 20;
-    const float spacing = 2.0f / lineCount;
+    const float spacing = 20.0f / lineCount;
 
     for (int i = 0; i <= lineCount; i++) {
-        float value = -1.0f + i * spacing;
+        float value = -10.0f + i * spacing;
 
         // vertical line
         gridVertices.push_back(value); // x
         gridVertices.push_back(0.0f); // y
-        gridVertices.push_back(-1.0f); // z
+        gridVertices.push_back(-10.0f); // z
 
         gridVertices.push_back(value);
         gridVertices.push_back(0.0f);
-        gridVertices.push_back(1.0f);
+        gridVertices.push_back(10.0f);
 
         // horizontal line
-        gridVertices.push_back(-1.0f); // x 
+        gridVertices.push_back(-10.0f); // x 
         gridVertices.push_back(0.0f); // y
         gridVertices.push_back(value); // z
 
-        gridVertices.push_back(1.0f);
+        gridVertices.push_back(10.0f);
         gridVertices.push_back(0.0f);
         gridVertices.push_back(value);
     }
