@@ -82,9 +82,17 @@ void main() {
             float diskDist = length(vec2(newPos.x, newPos.z));
             if (diskDist > uDiskInnerRadius && diskDist < uDiskOuterRadius) {
                 float t = (diskDist - uDiskInnerRadius) / (uDiskOuterRadius - uDiskInnerRadius);
-                float angle   = atan(newPos.z, newPos.x);
-                float spin    = fract(angle / 6.28318 - uTime * 0.3 + t);
-                float intensity = clamp(1.0 - t, 0.0, 1.0);
+
+                vec3 diskPoint = newPos;
+                vec3 radial = normalize(vec3(diskPoint.x, 0.0, diskPoint.z));
+                vec3 orbitalDir = normalize(vec3(radial.z, 0.0, -radial.x));
+
+                vec3 toCam = normalize(uCameraPos - (diskPoint + uBlackHolePosition));
+
+                float doppler = 1.0 + dot(orbitalDir, toCam);
+                doppler = pow(max(doppler, 0.0), 4.0);
+
+                float intensity = clamp((1.0 - t) * 0.9, 0.0, 1.0) * doppler;
                 diskColor = mix(vec3(1.0, 0.9, 0.4), vec3(1.0, 0.2, 0.0), t) * intensity;
                 hitDisk       = true;
                 break;
