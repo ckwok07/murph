@@ -81,8 +81,10 @@ bool Application::init() {
     physics.addParticle(p3);
 
     blackhole.position = glm::vec3(0.0f, 0.0f, 0.0f);
-    blackhole.mass = 1.0f;
-    blackhole.eventHorizonRadius = blackhole.schwarzschildRadius();
+    blackhole.mass = 2.0f;
+    blackhole.eventHorizonRadius = 4.0f;
+    blackhole.diskInnerRadius = 6.0f;
+    blackhole.diskOuterRadius = 20.0f;
     return true;
 }
 

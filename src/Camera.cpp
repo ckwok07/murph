@@ -3,7 +3,7 @@
 #include <algorithm>
 
 Camera::Camera()
-    : position(0.0f, 0.5f, 3.0f),
+    : position(0.0f, 1.0f, 30.0f),
     yaw(-90.0f),
     pitch(0.0f),
     fov(45.0f),
@@ -43,11 +43,11 @@ void Camera::mouseEvent(float dx, float dy) {
 }
 
 void Camera::keyEvent(bool w, bool a, bool s, bool d, bool shift, bool space, float dt) {
-    if (w) position += front * 1.0f * dt;
-    if (s) position -= front * 1.0f * dt;
-    if (d) position += side * 1.0f * dt;
-    if (a) position -= side * 1.0f * dt;
-    if (space) position += glm::vec3(0.0f, 1.0f, 0.0f) * 0.5f * dt;
-    if (shift) position -= glm::vec3(0.0f, 1.0f, 0.0f) * 0.5f * dt;
+    if (w) position += front * 5.0f * dt;
+    if (s) position -= front * 5.0f * dt;
+    if (d) position += side * 5.0f * dt;
+    if (a) position -= side * 5.0f * dt;
+    if (space) position += glm::vec3(0.0f, 1.0f, 0.0f) * 5.0f * dt;
+    if (shift) position -= glm::vec3(0.0f, 1.0f, 0.0f) * 5.0f * dt;
 }
 

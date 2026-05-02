@@ -5,6 +5,8 @@ struct BlackHole {
     glm::vec3 position;
     float mass;
     float eventHorizonRadius;
+    float diskInnerRadius;
+    float diskOuterRadius;
 
     float schwarzschildRadius() const {
         const float G = 1.0f;
