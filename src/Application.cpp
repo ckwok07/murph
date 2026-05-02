@@ -3,6 +3,7 @@
 struct GLFWwindow;
 #include <iostream>
 #include <glad/glad.h>
+#include "BlackHole.h"
 
 Application::Application()
     : window(nullptr) {
@@ -78,6 +79,10 @@ bool Application::init() {
     p3.mass = 1.0f;
     p3.size = 1.0f;
     physics.addParticle(p3);
+
+    blackhole.position = glm::vec3(0.0f, 0.0f, 0.0f);
+    blackhole.mass = 1.0f;
+    blackhole.eventHorizonRadius = blackhole.schwarzschildRadius();
     return true;
 }
 
@@ -110,7 +115,7 @@ void Application::loop() {
         physics.update(dt);
         // renderer.clear();
         // renderer.draw(physics.particles);
-        renderer.drawRaymarch();
+        renderer.drawRaymarch(blackhole);
         glfwSwapBuffers(window);
     }
 }

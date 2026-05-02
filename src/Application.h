@@ -3,6 +3,7 @@
 #include <GLFW/glfw3.h>
 #include "Renderer.h"
 #include "Physics.h"
+#include "BlackHole.h"
 
 class Application {
 public:
@@ -22,4 +23,5 @@ private:
     GLFWwindow* window;
     Renderer renderer;
     Physics physics;
+    BlackHole blackhole;
 };

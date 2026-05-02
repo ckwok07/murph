@@ -2,6 +2,7 @@
 #include "Shader.h"
 #include "Camera.h"
 #include "Particle.h"
+#include "BlackHole.h"
 
 class Renderer {
 public:
@@ -14,7 +15,7 @@ public:
 
     void draw(const std::vector<Particle>& particles);
 
-    void drawRaymarch();
+    void drawRaymarch(const BlackHole& blackHole);
 
 private:
     float r = 1.0f;

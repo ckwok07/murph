@@ -3,6 +3,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <vector>
+#include "BlackHole.h"
 
 Renderer::Renderer()
     : r(0.2f),
@@ -154,10 +155,63 @@ bool Renderer::init() {
     uniform vec3 uCameraRight;
     uniform vec3 uCameraUp;
 
+    uniform vec3 uBlackHolePosition;
+    uniform float uEventHorizonRadius;
+
     void main() {
         vec2 uv = vUV * 2.0 - 1.0;
+        vec3 rayDir = normalize(
+            uCameraFront +
+            uv.x * uCameraRight +
+            uv.y * uCameraUp
+        );
 
-        FragColor = vec4(abs(uv.x), abs(uv.y), 0.0, 1.0);
+        vec3 p = uCameraPos;
+        bool swallowed = false;
+
+        float stepSize = 0.05;
+        float maxDistance = 100.0;
+        float traveled = 0.0;
+        float minDist = 1e10;
+        float photonSphereRadius = 1.5 * uEventHorizonRadius;
+
+        for (int i = 0; i < 2000; i++) {
+            vec3 toBlackHole = uBlackHolePosition - p;
+            float dist = length(toBlackHole);
+            minDist = min(minDist, dist);
+
+            if (dist < uEventHorizonRadius) {
+                swallowed = true;
+                break;
+            }
+
+            float rs = uEventHorizonRadius; // rs = 2GM/c², you set this directly
+            float r = max(dist, 0.001);
+            vec3 acceleration = -1.5 * rs * dot(rayDir, rayDir) * toBlackHole / (r * r * r * r * r);
+            rayDir = normalize(rayDir + acceleration * stepSize);
+
+            p += rayDir * stepSize;
+            traveled += stepSize;
+
+            if (traveled > maxDistance) {
+                break;
+            }
+        }
+        if (swallowed) {
+            FragColor = vec4(0.0, 0.0, 0.0, 1.0);
+        } else if (!swallowed && minDist < photonSphereRadius * 1.2) {
+            float brightness = 1.0 - (minDist - uEventHorizonRadius) / (photonSphereRadius * 0.2);
+            FragColor = vec4(vec3(brightness), 1.0);
+        } else {
+            vec3 dir = normalize(rayDir);
+
+            float stars = 0.0;
+            vec3 q = floor(dir * 150.0);
+            float h = fract(sin(dot(q, vec3(127.1, 311.7, 74.7))) * 43758.5453);
+            if (h > 0.98) stars = h;
+
+            FragColor = vec4(vec3(stars), 1.0);
+        }
     }
     )";
 
@@ -239,12 +293,16 @@ void Renderer::draw(const std::vector<Particle>& particles) {
     glBindVertexArray(0);
 }
 
-void Renderer::drawRaymarch() {
+void Renderer::drawRaymarch(const BlackHole& blackHole) {
     qShader.use();
     qShader.setVec3("uCameraPos", camera.position);
     qShader.setVec3("uCameraFront", camera.front);
     qShader.setVec3("uCameraRight", camera.side);
     qShader.setVec3("uCameraUp", camera.up);
+
+    qShader.setVec3("uBlackHolePosition", blackHole.position);
+    qShader.setFloat("uEventHorizonRadius", blackHole.eventHorizonRadius);
+
     glBindVertexArray(qvao);
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
